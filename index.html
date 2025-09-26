@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Automators — Home</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <span>Automators</span>
+      </div>
+      <nav class="links">
+        <a href="chat.html">Live Demo</a>
+        <a href="docs/quickstart.html">Docs</a>
+        <a href="pricing.html">Pricing</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap hero">
+    <h1>Answer visitor questions with your own knowledge—instantly.</h1>
+    <p class="sub">Connect a Drive folder, paste our widget, and every answer cites a source. Fewer tickets, faster conversions.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="chat.html">Try the live demo</a>
+      <a class="btn" href="docs/quickstart.html">How it works</a>
+    </div>
+
+    <section class="cards">
+      <div class="card">
+        <h3>Website RAG Agent <span class="badge">Ready</span></h3>
+        <p>Citations, memory per session, Drive watcher for updates, Pinecone vector DB, and model‑agnostic backends.</p>
+        <ul>
+          <li>Copy‑paste embed widget</li>
+          <li>Custom tone & guardrails</li>
+          <li>Basic logs & analytics</li>
+        </ul>
+        <a class="btn small primary" href="chat.html">Try it now</a>
+      </div>
+      <div class="card muted">
+        <h3>LinkedIn Post Automator <span class="badge">Working</span></h3>
+        <p>Daily topic research, on‑brand writing, and auto‑generated visuals. Delivery via email or direct post (with approval).</p>
+        <ul>
+          <li>Style‑learning from your posts</li>
+          <li>Image templates to match brand</li>
+          <li>Queue & schedule (coming soon)</li>
+        </ul>
+        <a class="btn small" href="#">Join waitlist</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>© <span id="year"></span> Automators</span>
+      <div class="foot-links">
+        <a href="docs/quickstart.html">Docs</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

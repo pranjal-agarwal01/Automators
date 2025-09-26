@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Automators — Quickstart</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <span>Automators</span>
+      </div>
+      <nav class="links">
+        <a href="../index.html">Home</a>
+        <a href="../chat.html">Live Demo</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Quickstart</h1>
+    <ol>
+      <li><strong>Edit <code>js/config.js</code></strong> and set <code>N8N_URL</code> to your Production Webhook URL.</li>
+      <li>In your n8n Webhook node, set <strong>HTTP Method = POST</strong> and add CORS response headers:
+        <pre>Access-Control-Allow-Origin: https://&lt;your-github-username&gt;.github.io
+Access-Control-Allow-Methods: POST, OPTIONS
+Access-Control-Allow-Headers: Content-Type, X-API-Key</pre>
+        (If you don’t use API keys, remove <code>X-API-Key</code>.)
+      </li>
+      <li>Ensure your Memory node uses <code>{{$json.sessionId}}</code> as <strong>sessionKey</strong>.</li>
+      <li>Payload sent from the browser:
+        <pre>{
+  "sessionId": "BROWSER_OR_USER_ID",
+  "messages": [{ "text": { "body": "User message" } }]
+}</pre>
+      </li>
+      <li>Open <a href="../chat.html">chat.html</a> and talk to the bot.</li>
+    </ol>
+
+    <h2>Deploy on GitHub Pages</h2>
+    <ol>
+      <li>Create a public repo (e.g., <em>automators-site</em>).</li>
+      <li>Add these files/folders at the repo root:
+        <pre>index.html
+chat.html
+pricing.html
+css/styles.css
+js/config.js
+js/chat.js
+docs/quickstart.html</pre>
+      </li>
+      <li>Commit & push.</li>
+      <li>Repo Settings → Pages → Source: <strong>Deploy from a branch</strong>, Branch: <strong>main</strong>, Folder: <strong>/ (root)</strong>.</li>
+      <li>Your site will be available at <code>https://&lt;username&gt;.github.io/&lt;repo&gt;/</code>. Update the CORS origin accordingly.</li>
+    </ol>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+      <li><strong>CORS error:</strong> Re-check the three headers above. If you add custom headers (like API keys), browsers send a preflight (OPTIONS) request—make sure your Webhook/n8n handles it.</li>
+      <li><strong>No memory:</strong> Verify the <code>sessionId</code> is included in the JSON body and your memory node reads <code>{{$json.sessionId}}</code>.</li>
+      <li><strong>JSON printed in chat:</strong> Add a Respond to Webhook node at the end and set <em>Content-Type: text/plain</em> with just the text field.</li>
+    </ul>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>© <span id="year"></span> Automators</span>
+      <div class="foot-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
