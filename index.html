@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Automators – RAG Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:#fff;color:#111}
+    .wrap{max-width:960px;margin:0 auto;padding:24px}
+    .card{border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .row{display:flex;gap:8px}
+    .input{flex:1;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px}
+    .btn{border:0;background:#111;color:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
+    .msgs{height:360px;overflow:auto;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+    .bubble{max-width:85%;margin:8px 0;padding:8px 12px;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);font-size:14px;line-height:1.4}
+    .me{margin-left:auto;background:#111;color:#fff}
+    .bot{margin-right:auto;background:#fff;border:1px solid #e5e7eb}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Automators — Website RAG Agent</h1>
+    <p>Ask anything about our docs, features, or pricing.</p>
+
+    <div class="card">
+      <div id="msgs" class="msgs"></div>
+      <form id="form" class="row" style="margin-top:12px">
+        <input id="m" class="input" placeholder="Type your question…">
+        <button class="btn">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 1) Put your n8n Webhook (Production URL) here:
+    const N8N_URL = "https://YOUR-N8N-HOST/webhook/your-id"; // <-- change this
+
+    // Keep a stable sessionId per browser
+    const SID_KEY = "automators_sid";
+    const sid = localStorage.getItem(SID_KEY) || (crypto.randomUUID?.() || String(Date.now()));
+    localStorage.setItem(SID_KEY, sid);
+
+    const msgsEl = document.getElementById("msgs");
+    const form = document.getElementById("form");
+    const input = document.getElementById("m");
+
+    function add(role, text){
+      const el = document.createElement("div");
+      el.className = "bubble " + (role === "me" ? "me" : "bot");
+      el.innerText = text;
+      msgsEl.appendChild(el);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+
+    add("bot","Hi! I’m your site assistant. Ask me about Automators.");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      add("me", text);
+      input.value = "";
+
+      const typing = document.createElement("div");
+      typing.className = "bubble bot";
+      typing.innerText = "…";
+      msgsEl.appendChild(typing);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+
+      try {
+        // Call n8n webhook directly
+        const r = await fetch(N8N_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Session-Id": sid // optional
+          },
+          body: JSON.stringify({
+            sessionId: sid,
+            messages: [{ text: { body: text } }]
+          })
+        });
+        const reply = await r.text();
+        typing.innerText = reply || "(no response)";
+      } catch (err) {
+        typing.innerText = "(error, try again)";
+      }
+    });
+  </script>
+</body>
+</html>
