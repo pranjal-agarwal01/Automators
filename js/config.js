@@ -6,4 +6,4 @@ export const N8N_URL = "https://automaters.app.n8n.cloud/webhook/063f3f18-50c9-4
 
 // Optional: if you added a shared-secret check in n8n, set it here and
 // uncomment the header usage in chat.js
-export const API_KEY = ""; // e.g., "my-shared-secret"
+//export const API_KEY = ""; // e.g., "my-shared-secret"
