@@ -46,8 +46,80 @@
     </div>
   </footer>
 
-<script src="js/config.js"></script>
-<script src="js/chat.js"></script>
+<script>
+/* ---- Inline chat script (no imports, no external files) ---- */
+(function () {
+  // 1) SET YOUR N8N WEBHOOK URL HERE
+  var N8N_URL = "https://automaters.app.n8n.cloud/webhook/063f3f18-50c9-4cc6-96ad-1da0860c7c97"; // <-- change if different
+
+  // 2) Grab elements (IDs must exist in chat.html)
+  var msgsEl = document.getElementById('msgs');
+  var form   = document.getElementById('chat-form');
+  var input  = document.getElementById('chat-input');
+
+  // 3) Crash loudly if DOM is wrong
+  if (!msgsEl || !form || !input) {
+    console.error("Chat init error: missing #msgs, #chat-form, or #chat-input");
+    alert("Chat init error: missing #msgs, #chat-form, or #chat-input");
+    return;
+  }
+
+  // 4) Show a bot hello so you SEE the UI is live
+  function addBubble(role, text){
+    var el = document.createElement('div');
+    el.className = 'bubble ' + (role === 'me' ? 'me' : 'bot');
+    el.textContent = text;
+    msgsEl.appendChild(el);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+    return el;
+  }
+  addBubble('bot', 'Hi! I’m your site assistant. Ask me about Automators.');
+
+  // 5) Stable session id
+  var SID_KEY = 'automators_sid';
+  var sid = localStorage.getItem(SID_KEY) || (crypto.randomUUID && crypto.randomUUID() || String(Date.now()));
+  try { localStorage.setItem(SID_KEY, sid); } catch(e){}
+
+  // 6) Bind submit (this MUST run when you press Send/Enter)
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var text = (input.value || '').trim();
+    if (!text) return;
+
+    addBubble('me', text);
+    input.value = '';
+
+    var typing = addBubble('bot', '…');
+
+    try {
+      if (!N8N_URL) {
+        typing.textContent = '(N8N_URL not set)';
+        return;
+      }
+
+      // Minimal headers to avoid preflight
+      var r = await fetch(N8N_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: sid,
+          messages: [{ text: { body: text } }]
+        })
+      });
+
+      var reply = await r.text();
+      typing.textContent = reply || '(no response)';
+    } catch (err) {
+      console.error(err);
+      typing.textContent = '(error, try again)';
+    }
+  });
+
+  // 7) Debug: let’s log that JS actually ran
+  console.log("Chat script bound. Form handler attached:", !!form);
+})();
+</script>
+
 
 </body>
 </html>
