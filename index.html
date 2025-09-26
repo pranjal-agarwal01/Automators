@@ -72,8 +72,7 @@
         const r = await fetch(N8N_URL, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "X-Session-Id": sid // optional
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
             sessionId: sid,
